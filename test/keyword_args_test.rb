@@ -1,10 +1,6 @@
 require 'minitest/autorun'
 
 class KeywordArgsTest < Minitest::Test
-  def test_version
-    assert_equal '3.0.0', RUBY_VERSION
-  end
-
   def f1(key: 0)
     key
   end
