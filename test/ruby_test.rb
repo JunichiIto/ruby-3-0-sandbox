@@ -96,4 +96,105 @@ class RubyTest < Minitest::Test
 
     # NOTE: accessing a class variable from the toplevel scope is now a RuntimeError
   end
+
+  # TODO: RBS
+  # TODO: TypeProf
+  # TODO: --help pager echo $PAGER
+
+  class NewArray < Array; end
+  def test_array_subclass
+    a = NewArray.new
+    # Ruby 2.7 returns NewArray
+    assert_kind_of Array, a.flatten
+    # Array#drop
+    # Array#drop_while
+    # Array#flatten
+    # Array#slice!
+    # Array#slice/#[]
+    # Array#take
+    # Array#take_while
+    # Array#uniq
+    # Array#*
+  end
+
+  def test_env_except
+    assert ENV.keys.include?("PATH")
+    size = ENV.size
+
+    refute ENV.except("PATH").keys.include?("PATH")
+    assert_equal (size - 1), ENV.except("PATH").size
+  end
+
+  def test_hash_except
+    h = {a: 1, b: 2, c: 3}
+    assert h.include?(:b)
+    assert_equal({a: 1, c: 3}, h.except(:b))
+  end
+
+  def test_hash_transform_keys
+    # https://bugs.ruby-lang.org/issues/16274
+    hash = {created: "2020-12-25", updated: "2020-12-31", author: "foo"}
+    assert_equal(
+      {created_at: "2020-12-25", update_time: "2020-12-31", author: "foo"},
+      hash.transform_keys(created: :created_at, updated: :update_time)
+    )
+  end
+
+  require "set"
+  def test_clone_freeze
+    # https://bugs.ruby-lang.org/issues/14266
+    frozen_set = Set[].freeze
+    cloned = frozen_set.clone(freeze: false)
+    refute cloned.frozen?
+    # Ruby 2.7ではtrue
+    refute cloned.instance_variable_get(:@hash).frozen?
+
+    cloned = frozen_set.clone(freeze: true)
+    assert cloned.frozen?
+    assert cloned.instance_variable_get(:@hash).frozen?
+
+    cloned = frozen_set.clone
+    assert cloned.frozen?
+    assert cloned.instance_variable_get(:@hash).frozen?
+
+    unfrozen_set = Set[]
+    cloned = unfrozen_set.clone(freeze: true)
+    # Ruby 2.7ではどちらもfalse
+    assert cloned.frozen?
+    assert cloned.instance_variable_get(:@hash).frozen?
+  end
+
+  def test_eval
+    # Ruby 2.7
+    # (irb):25: warning: __FILE__ in eval may not return location in binding; use Binding#source_location instead
+    # (irb):25: warning: in `eval'
+    assert_equal '(eval)', eval('__FILE__', binding)
+
+    # Ruby 2.7
+    # (irb):26: warning: __LINE__ in eval may not return location in binding; use Binding#source_location instead
+    # (irb):26: warning: in `eval'
+    assert_equal 1, eval('__LINE__', binding)
+  end
+
+  def to_lambda(&b)
+    lambda(&b)
+  end
+
+  # TODO: なぜ変更する必要があったのかわからない
+  def test_lambda
+    # needs -w option
+    # warning: lambda without a literal block is deprecated; use the proc without lambda instead
+    obj = lambda(&:foo)
+    assert obj.lambda?
+    obj = lambda(&method(:test_lambda))
+    assert obj.lambda?
+
+    # no warning
+    obj = proc(&:foo)
+    # TODO: Ruby 2.7ではfalse
+    assert obj.lambda?
+
+    obj = to_lambda { 1 }
+    refute obj.lambda?
+  end
 end
