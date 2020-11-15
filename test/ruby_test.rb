@@ -1,5 +1,12 @@
 require 'minitest/autorun'
 
+module Warning
+  # 警告メッセージの末尾に !!! を追加する
+  def self.warn(*message, category: nil)
+    super(*message.map { |msg| msg.chomp + " <<#{category}>>\n" })
+  end
+end
+
 class RubyTest < Minitest::Test
   def refute_syntax(script, message = nil, debug: false)
     err = assert_raises(SyntaxError) do
@@ -74,25 +81,27 @@ class RubyTest < Minitest::Test
     end
   end
 
-  class C
-    @@x = 1
-  end
+  module CV
+    class C
+      @@x = 1
+    end
 
-  module M
-    @@x = 2
-  end
+    module M
+      @@x = 2
+    end
 
-  class D < C
-    include M
-    def foo
-      @@x
+    class D < C
+      include M
+      def foo
+        @@x
+      end
     end
   end
 
   def test_class_var
-    d = D.new
+    d = CV::D.new
     e = assert_raises(RuntimeError) { d.foo }
-    assert_equal "class variable @@x of RubyTest::M is overtaken by RubyTest::C", e.message
+    assert_equal "class variable @@x of RubyTest::CV::M is overtaken by RubyTest::CV::C", e.message
 
     # NOTE: accessing a class variable from the toplevel scope is now a RuntimeError
   end
@@ -197,4 +206,47 @@ class RubyTest < Minitest::Test
     obj = to_lambda { 1 }
     refute obj.lambda?
   end
+
+  module MD
+    class C; end
+    module M1; end
+    module M2; def foo; end end
+  end
+
+  def test_module_include
+    MD::C.include MD::M1
+    MD::M1.include MD::M2
+    # Ruby 2.7ではM2が含まれない
+    assert_equal [MD::C, MD::M1, MD::M2, Object, Minitest::Expectations, Kernel, BasicObject], MD::C.ancestors
+    # Ruby 2.7ではfooが呼べない
+    assert MD::C.new.respond_to?(:foo)
+  end
+
+  def test_range_frozen
+    assert (1..2).frozen?
+  end
+
+  # TODO: thread, Kernel.sleep関係
+  # https://bugs.ruby-lang.org/issues/16786
+  # TODO: ractor関係
+
+  def test_symbol_to_proc
+    # https://bugs.ruby-lang.org/issues/16260
+    assert :to_s.to_proc.lambda?
+  end
+
+  def test_symbol_name
+    assert_equal 'a', :a.name
+    assert_equal 'a', :a.to_s
+
+    assert :a.name.frozen?
+    refute :a.to_s.frozen?
+
+    assert :a.name.equal?(:a.name)
+    refute :a.to_s.equal?(:a.to_s)
+  end
+
+  # Warning.warnのテストは省略
+
+  # TODO: GC.auto_compact=, GC.auto_compact
 end
