@@ -224,6 +224,7 @@ class RubyTest < Minitest::Test
 
   def test_range_frozen
     assert (1..2).frozen?
+    assert Range.new(1, 2).frozen?
   end
 
   # TODO: thread, Kernel.sleep関係
@@ -249,4 +250,35 @@ class RubyTest < Minitest::Test
   # Warning.warnのテストは省略
 
   # TODO: GC.auto_compact=, GC.auto_compact
+
+  require 'ostruct'
+  def test_open_struct_initialization
+    # Ruby 2.7では ArgumentError (wrong number of arguments (given 0, expected 1))
+    os = OpenStruct.new(method: :foo)
+    assert_equal :foo, os.send(:method)
+    assert_equal :foo, os.method
+
+    assert_equal OpenStruct, os.method!(:to_s).owner
+    # Ruby 2.7ではnil
+    assert_equal '#<OpenStruct method=:foo>', os.to_s!
+  end
+
+  # Improved support for YAMLのテストは省略
+  # https://bugs.ruby-lang.org/issues/8382
+  # https://github.com/ruby/ostruct/commit/683c3d63e9fa5478e12d1fa0b09b3151f577cb57
+
+  # TODO: Use officially discouraged. Read "Caveats" section. の詳細が不明
+  # https://github.com/ruby/ruby/commit/0e93118c44fc4128bcacfe1dc6702c84a84b862b
+
+  def test_regex_frozen
+    assert(/\d+/.frozen?)
+    refute Regexp.new('\\d+').frozen?
+
+    re = /a/
+    assert_raises(FrozenError) { def re.foo; end }
+
+    re = Regexp.new('a')
+    def re.foo; 123 end
+    assert_equal 123, re.foo
+  end
 end
