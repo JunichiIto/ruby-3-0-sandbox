@@ -1,7 +1,6 @@
 require 'minitest/autorun'
 
 module Warning
-  # 警告メッセージの末尾に !!! を追加する
   def self.warn(*message, category: nil)
     super(*message.map { |msg| msg.chomp + " <<#{category}>>\n" })
   end
@@ -281,4 +280,59 @@ class RubyTest < Minitest::Test
     def re.foo; 123 end
     assert_equal 123, re.foo
   end
+
+  # EXPERIMENTAL
+  def test_hash_yield
+    h = {a: 1}
+    h.each do |k, v|
+      assert_equal :a, k
+      assert_equal 1, v
+    end
+    pr = proc do |k, v|
+      assert_equal :a, k
+      assert_equal 1, v
+    end
+    h.each(&pr)
+    l_two = lambda do |k, v|
+      assert_equal :a, k
+      assert_equal 1, v
+    end
+    assert_raises(ArgumentError) { h.each(&l_two) }
+    l_one = lambda do |(k, v)|
+      assert_equal :a, k
+      assert_equal 1, v
+    end
+    h.each(&l_one)
+  end
+
+  # TODO: When writing to STDOUT redirected to a closed pipe, no broken pipe error message will be shown now.
+  # https://bugs.ruby-lang.org/issues/14413
+  # https://github.com/ruby/ruby/commit/6f28ebd585fba1aff1c9591ced08ed11b68ba9e3
+
+  def test_removed_constants
+    assert_raises(NameError) { TRUE }
+    assert_raises(NameError) { FALSE }
+    assert_raises(NameError) { NIL }
+  end
+
+  def test_integer_zero
+    assert_equal Integer, 1.method(:zero?).owner
+  end
+
+  # TODO: Ractor
+
+  ruby2_keywords def with_r2k(*args)
+    args
+  end
+  def without_r2k(*args)
+    args
+  end
+  def test_ruby2_keywords
+    # Ruby 2.7では[{}]
+    assert_equal [], with_r2k(**{})
+
+    assert_equal [], without_r2k(**{})
+  end
+
+  # --backtrace-limit option
 end
