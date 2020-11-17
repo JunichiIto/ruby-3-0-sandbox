@@ -266,9 +266,6 @@ class RubyTest < Minitest::Test
   # https://bugs.ruby-lang.org/issues/8382
   # https://github.com/ruby/ostruct/commit/683c3d63e9fa5478e12d1fa0b09b3151f577cb57
 
-  # TODO: Use officially discouraged. Read "Caveats" section. の詳細が不明
-  # https://github.com/ruby/ruby/commit/0e93118c44fc4128bcacfe1dc6702c84a84b862b
-
   def test_regex_frozen
     assert(/\d+/.frozen?)
     refute Regexp.new('\\d+').frozen?
@@ -318,8 +315,6 @@ class RubyTest < Minitest::Test
   def test_integer_zero
     assert_equal Integer, 1.method(:zero?).owner
   end
-
-  # TODO: Ractor
 
   ruby2_keywords def with_r2k(*args)
     args
