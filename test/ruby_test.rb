@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require './test/refute_syntax'
 
 module Warning
   def self.warn(*message, category: nil)
@@ -7,15 +8,7 @@ module Warning
 end
 
 class RubyTest < Minitest::Test
-  def refute_syntax(script, message = nil, debug: false)
-    err = assert_raises(SyntaxError) do
-      RubyVM::InstructionSequence.compile(script)
-    end
-    puts err.message if debug
-    if message
-      assert_includes err.message, message
-    end
-  end
+  include RefuteSyntax
 
   def add(a, b, c)
     a + b + c
