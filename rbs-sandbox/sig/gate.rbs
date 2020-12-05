@@ -1,0 +1,9 @@
+class Gate
+  STATIONS : [:umeda, :juso, :mikuni]
+  FARES : [Integer, Integer]
+  @name : :juso | :mikuni | :umeda
+  def initialize : (:juso | :mikuni | :umeda) -> void
+  def enter : (Ticket) -> void
+  def exit : (Ticket) -> bool
+  def calc_fare : (Ticket) -> Integer
+end

@@ -1,0 +1,6 @@
+class Ticket
+  attr_reader fare : Integer
+  attr_reader stamped_at : :juso | :mikuni | :umeda
+  def initialize : (Integer) -> void
+  def stamp : (:juso | :mikuni | :umeda) -> void
+end
