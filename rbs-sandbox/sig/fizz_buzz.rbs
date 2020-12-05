@@ -1,0 +1,3 @@
+module FizzBuzz
+  def self.run : (Integer) -> Array[String]
+end
