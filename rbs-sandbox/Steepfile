@@ -6,6 +6,7 @@ target :lib do
   repo_path "vendor/rbs/gem_rbs/gems"
   library "retryable"
   library "forwardable"
+  library "date"
 end
 
 # target :lib do

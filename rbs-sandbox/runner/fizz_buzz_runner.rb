@@ -1,4 +1,8 @@
+require 'date'
+require 'retryable'
 require_relative '../lib/fizz_buzz'
 
-results = FizzBuzz.run(15)
-puts results
+Retryable.retryable(tries: 3) do
+  results = FizzBuzz.run(Date.today.day)
+  puts results
+end
