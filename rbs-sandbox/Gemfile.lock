@@ -27,6 +27,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rbs (0.17.0)
+    retryable (3.0.5)
     steep (0.36.0)
       activesupport (>= 5.1)
       ast_utils (~> 0.3.0)
@@ -45,6 +46,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  retryable
   steep
 
 BUNDLED WITH

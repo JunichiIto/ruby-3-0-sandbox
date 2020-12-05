@@ -1,0 +1,3 @@
+[submodule "rbs-sandbox/vendor/rbs/gem_rbs"]
+	path = rbs-sandbox/vendor/rbs/gem_rbs
+	url = https://github.com/ruby/gem_rbs.git

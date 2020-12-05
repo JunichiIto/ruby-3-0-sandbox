@@ -1,6 +1,10 @@
 target :app do
   check "lib"
   signature "sig"
+
+  repo_path "vendor/rbs/gem_rbs/gems"
+  library "retryable"
+  library "forwardable"
 end
 
 # target :lib do
