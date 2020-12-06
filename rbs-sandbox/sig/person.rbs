@@ -1,4 +1,5 @@
 class Person
   @name : String
   def initialize : (String) -> void
+  def hello : -> void
 end
