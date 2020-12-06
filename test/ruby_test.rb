@@ -19,8 +19,14 @@ class RubyTest < Minitest::Test
     "answer is #{answer}"
   end
 
+  def add_with_description_3(a, b, ...)
+    answer = add(a, b, ...)
+    "answer is #{answer}"
+  end
+
   def test_arguments_forwarding
     assert_equal "answer is 6", add_with_description_2(1, 2, 3)
+    assert_equal "answer is 15", add_with_description_3(4, 5, 6)
   end
 
   def test_proc_arguments
@@ -320,6 +326,18 @@ class RubyTest < Minitest::Test
     assert_equal [], with_r2k(**{})
 
     assert_equal [], without_r2k(**{})
+  end
+
+  def test_numbered_args
+    refute_syntax(<<~RUBY, '_1 is reserved for numbered parameter')
+      _1 = 123
+    RUBY
+  end
+
+  def test_numbered_methods
+    refute_syntax(<<~RUBY, '_1 is reserved for numbered parameter')
+      def _1; end
+    RUBY
   end
 
   # --backtrace-limit option
