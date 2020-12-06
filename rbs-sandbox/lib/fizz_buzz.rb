@@ -1,4 +1,4 @@
-module FizzBuzz
+class FizzBuzz
   def self.run(n)
     1.upto(n).map do |n|
       if n % 15 == 0
