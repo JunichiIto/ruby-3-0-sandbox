@@ -30,6 +30,9 @@ class RubyTest < Minitest::Test
   end
 
   def test_proc_arguments
+    pr = proc{|*a| a}
+    assert_equal([[1]], pr.call([1]))
+
     pr = proc{|*a, **kw| [a, kw]}
     assert_equal([[[1]], {}], pr.call([1]))
     assert_equal([[[1, {:a=>1}]], {}], pr.call([1, {a: 1}]))
@@ -77,6 +80,36 @@ class RubyTest < Minitest::Test
       assert_equal "c", y
       assert_equal [2, "d", "e", "f", 3], post
     end
+
+    case ['Alice', 'Bob', 'Carol']
+    in ['Alice', *others]
+      assert_equal(['Bob', 'Carol'], others)
+    end
+
+    case ['Bob', 'Carol', 'Alice']
+    in [*others, 'Alice']
+      assert_equal(['Bob', 'Carol'], others)
+    end
+
+    case ['Bob', 'Alice', 'Carol']
+    in [*others_before, 'Alice', *others_after]
+      assert_equal(['Bob'], others_before)
+      assert_equal(['Carol'], others_after)
+    end
+
+    case ['Alice']
+    in [*others_before, 'Alice', *others_after]
+      assert_equal([], others_before)
+      assert_equal([], others_after)
+    end
+
+    refute_syntax(<<~RUBY)
+      case ['Bob', 'Alice', 'Carol', 'Dave']
+      in [*others_before, 'Alice', *others_after, 'Dave']
+        assert_equal(['Bob'], others_before)
+        assert_equal(['Carol'], others_after)
+      end
+    RUBY
   end
 
   module CV
