@@ -42,6 +42,10 @@ class RubyTest < Minitest::Test
     assert_nil $SAFE
   end
 
+  def assert_global_kcode
+    assert_nil $KCODE
+  end
+
   def test_yield
     refute_syntax(<<~RUBY, 'Invalid yield')
       def foo
