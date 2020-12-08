@@ -12,12 +12,22 @@ class FrozenStringTest < Minitest::Test
     fr1_1 = foo(fr1)
     fr2_1 = foo(fr2)
 
-    assert fr1.object_id == fr2.object_id
-    refute fr1_1.object_id == fr2_1.object_id
+    assert_same fr1, fr2
+    refute_same fr1_1, fr2_1
 
     assert fr1.frozen?
     assert fr2.frozen?
     refute fr1_1.frozen?
     refute fr2_1.frozen?
+
+    a = "#{123}"
+    b = "#{123}"
+    # assert_same a, b
+    refute_same a, b
+
+    # assert fr1.frozen?
+    # assert fr2.frozen?
+    refute a.frozen?
+    refute b.frozen?
   end
 end
