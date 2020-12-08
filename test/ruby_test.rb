@@ -161,18 +161,31 @@ class RubyTest < Minitest::Test
     # Array#*
   end
 
+  def test_dir_sort
+    path = File.expand_path('../fixtures/*', __FILE__)
+    assert_equal ['a.txt', 'b.txt', 'c.txt'], Dir.glob(path).map{|s| File.basename(s)}
+    assert_equal ['a.txt', 'b.txt', 'c.txt'], Dir.glob(path, sort: false).map{|s| File.basename(s)}.sort
+
+    assert_equal ['a.txt', 'b.txt', 'c.txt'], Dir[path].map{|s| File.basename(s)}
+    assert_equal ['a.txt', 'b.txt', 'c.txt'], Dir[path, sort: false].map{|s| File.basename(s)}.sort
+  end
+
   def test_env_except
     assert ENV.keys.include?("PATH")
     size = ENV.size
 
     refute ENV.except("PATH").keys.include?("PATH")
     assert_equal (size - 1), ENV.except("PATH").size
+
+    assert_instance_of Object, ENV
+    assert_instance_of Hash, ENV.except("PATH")
   end
 
   def test_hash_except
     h = {a: 1, b: 2, c: 3}
     assert h.include?(:b)
     assert_equal({a: 1, c: 3}, h.except(:b))
+    assert_equal({b: 2}, h.except(:a, :c))
   end
 
   def test_hash_transform_keys
