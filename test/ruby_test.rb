@@ -195,6 +195,16 @@ class RubyTest < Minitest::Test
       {created_at: "2020-12-25", update_time: "2020-12-31", author: "foo"},
       hash.transform_keys(created: :created_at, updated: :update_time)
     )
+    assert_equal(
+      {created_at: "2020-12-25", update_time: "2020-12-31", author: "foo"},
+      hash.transform_keys do |key|
+        case key
+        when :created then :created_at
+        when :updated then :update_time
+        else key
+        end
+      end
+    )
   end
 
   require "set"
