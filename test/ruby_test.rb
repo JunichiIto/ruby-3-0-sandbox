@@ -343,6 +343,26 @@ class RubyTest < Minitest::Test
     assert_equal 'HELLO...!!!', person.shout
   end
 
+  def return_proc(&block)
+    block
+  end
+
+  def return_procs(&block)
+    proc_1 = return_proc(&block)
+    proc_2 = return_proc(&block)
+    [proc_1, proc_2]
+  end
+
+  def test_proc_eql
+    proc_1, proc_2 = return_procs { }
+    assert proc_1 == proc_2
+    assert proc_1.eql?(proc_2)
+
+    other_1, other_2 = return_procs { }
+    refute proc_1 == other_1
+    refute proc_1.eql?(other_1)
+  end
+
   def test_range_frozen
     assert (1..2).frozen?
     assert Range.new(1, 2).frozen?
