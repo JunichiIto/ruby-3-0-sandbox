@@ -280,6 +280,69 @@ class RubyTest < Minitest::Test
     assert MD::C.new.respond_to?(:foo)
   end
 
+  module Shoutable
+    def shout
+      "#{hello.upcase}!!!"
+    end
+  end
+  module Speakable
+    def hello
+      'Hello'
+    end
+  end
+  module Whisperable
+    def hello
+      msg = super
+      "#{msg.downcase}..."
+    end
+  end
+  class Person
+    include Speakable
+  end
+  def test_person
+    person = Person.new
+    assert_equal 'Hello', person.hello
+    Speakable.include Shoutable
+    # Ruby 2.7では NoMethodError (undefined method `shout' for #<Person:0x00007feaa4a63c68>)
+    assert_equal 'HELLO!!!', person.shout
+
+    Speakable.prepend Whisperable
+    # Ruby 2.7では Hello
+    assert_equal 'hello...', person.hello
+    assert_equal 'HELLO...!!!', person.shout
+
+    p Person.ancestors
+  end
+
+  module StaticSample
+    module Shoutable
+      def shout
+        "#{hello.upcase}!!!"
+      end
+    end
+    module Whisperable
+      def hello
+        msg = super
+        "#{msg.downcase}..."
+      end
+    end
+    module Speakable
+      include Shoutable
+      prepend Whisperable
+      def hello
+        'Hello'
+      end
+    end
+    class Person
+      include Speakable
+    end
+  end
+  def test_static_person
+    person = StaticSample::Person.new
+    assert_equal 'hello...', person.hello
+    assert_equal 'HELLO...!!!', person.shout
+  end
+
   def test_range_frozen
     assert (1..2).frozen?
     assert Range.new(1, 2).frozen?
