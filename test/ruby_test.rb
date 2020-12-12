@@ -149,7 +149,7 @@ class RubyTest < Minitest::Test
   def test_array_subclass
     a = NewArray.new
     # Ruby 2.7 returns NewArray
-    assert_kind_of Array, a.flatten
+    assert_instance_of Array, a.flatten
     # Array#drop
     # Array#drop_while
     # Array#flatten
@@ -361,6 +361,46 @@ class RubyTest < Minitest::Test
     other_1, other_2 = return_procs { }
     refute proc_1 == other_1
     refute proc_1.eql?(other_1)
+  end
+
+  class NewString < String; end
+  def test_string_subclass
+    s = NewString.new
+    # Ruby 2.7 returns NewString
+    assert_instance_of String, s.upcase
+    # String#*
+    # String#capitalize
+    # String#center
+    # String#chomp
+    # String#chop
+    # String#delete
+    # String#delete_prefix
+    # String#delete_suffix
+    # String#downcase
+    # String#dump
+    # String#each_char
+    # String#each_grapheme_cluster
+    # String#each_line
+    # String#gsub
+    # String#ljust
+    # String#lstrip
+    # String#partition
+    # String#reverse
+    # String#rjust
+    # String#rpartition
+    # String#rstrip
+    # String#scrub
+    # String#slice!
+    # String#slice / String#[]
+    # String#split
+    # String#squeeze
+    # String#strip
+    # String#sub
+    # String#succ / String#next
+    # String#swapcase
+    # String#tr
+    # String#tr_s
+    # String#upcase
   end
 
   def test_range_frozen
