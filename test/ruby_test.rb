@@ -438,6 +438,9 @@ class RubyTest < Minitest::Test
   end
 
   # Warning.warnのテストは省略
+  def test_warn
+    warn "test_warn", category: :deprecated
+  end
 
   # TODO: GC.auto_compact=, GC.auto_compact
 
