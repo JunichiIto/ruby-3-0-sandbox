@@ -247,18 +247,18 @@ class RubyTest < Minitest::Test
     lambda(&b)
   end
 
-  # TODO: なぜ変更する必要があったのかわからない
   def test_lambda
     # needs -w option
     # warning: lambda without a literal block is deprecated; use the proc without lambda instead
     obj = lambda(&:foo)
+    # Ruby 2.7ではfalse
     assert obj.lambda?
     obj = lambda(&method(:test_lambda))
+    # Ruby 2.7でもtrue
     assert obj.lambda?
 
     # no warning
     obj = proc(&:foo)
-    # TODO: Ruby 2.7ではfalse
     assert obj.lambda?
 
     obj = to_lambda { 1 }
