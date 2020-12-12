@@ -415,6 +415,15 @@ class RubyTest < Minitest::Test
   def test_symbol_to_proc
     # https://bugs.ruby-lang.org/issues/16260
     assert :to_s.to_proc.lambda?
+
+    prc = :divmod.to_proc
+    assert_equal [3, 1], prc.call(7, 2)
+    assert_raises(ArgumentError) do
+      prc.call(7)
+    end
+    assert_raises(ArgumentError) do
+      prc.call(7, 2, 0)
+    end
   end
 
   def test_symbol_name
