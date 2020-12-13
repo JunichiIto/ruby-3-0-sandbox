@@ -463,6 +463,7 @@ class RubyTest < Minitest::Test
   def test_regex_frozen
     assert(/\d+/.frozen?)
     refute Regexp.new('\\d+').frozen?
+    refute(/\d+/.dup.frozen?)
 
     re = /a/
     assert_raises(FrozenError) { def re.foo; end }
@@ -494,6 +495,11 @@ class RubyTest < Minitest::Test
       assert_equal 1, v
     end
     h.each(&l_one)
+    l_array = lambda do |arr|
+      assert_equal :a, arr[0]
+      assert_equal 1, arr[1]
+    end
+    h.each(&l_array)
   end
 
   # TODO: When writing to STDOUT redirected to a closed pipe, no broken pipe error message will be shown now.
