@@ -526,6 +526,7 @@ class RubyTest < Minitest::Test
     # Ruby 2.7では[{}]
     assert_equal [], with_r2k(**{})
 
+    # Ruby 2.7でも[]
     assert_equal [], without_r2k(**{})
   end
 
