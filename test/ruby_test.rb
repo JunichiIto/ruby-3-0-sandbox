@@ -505,5 +505,20 @@ class RubyTest < Minitest::Test
     TEXT
   end
 
+  def test_grep_and_grep_v
+    'z' =~ /z/
+    refute_nil $~
+
+    assert_equal ["abc"], ["abc", "def"].grep(/b/)
+    refute_nil $~
+
+    assert_equal ["def"], ["abc", "def"].grep_v(/b/)
+    refute_nil $~
+
+    ["abc", "def", "cba"].grep(/b./) do |s|
+    end
+    assert_equal ["ba"], $~.to_a
+  end
+
   # --backtrace-limit option
 end
