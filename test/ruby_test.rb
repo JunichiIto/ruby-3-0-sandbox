@@ -482,5 +482,10 @@ class RubyTest < Minitest::Test
     RUBY
   end
 
+  def test_random
+    # warning: constant Random::DEFAULT is deprecated
+    assert_same Random, Random::DEFAULT
+  end
+
   # --backtrace-limit option
 end
