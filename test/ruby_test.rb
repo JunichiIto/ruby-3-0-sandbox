@@ -145,6 +145,16 @@ class RubyTest < Minitest::Test
         end
       end
     )
+
+    refute_equal(
+      {created_at: "2020-12-25", update_time: "2020-12-31", author: "foo"},
+      hash
+    )
+    hash.transform_keys!(created: :created_at, updated: :update_time)
+    assert_equal(
+      {created_at: "2020-12-25", update_time: "2020-12-31", author: "foo"},
+      hash
+    )
   end
 
   require "set"
@@ -485,6 +495,14 @@ class RubyTest < Minitest::Test
   def test_random
     # warning: constant Random::DEFAULT is deprecated
     assert_same Random, Random::DEFAULT
+  end
+
+  def test_closed_pipe
+    ret = `seq 1000000 | ruby -ne 'print if 12..' | head -2`
+    assert_equal <<~TEXT, ret
+      12
+      13
+    TEXT
   end
 
   # --backtrace-limit option
