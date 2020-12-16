@@ -19,7 +19,7 @@ class PatternMatchinTest < Minitest::Test
     assert_equal 0, a
 
     if {a: 0, b: 1} in {b:}
-      assert true
+      assert_equal 1, b
     else
       raise
     end
@@ -31,6 +31,10 @@ class PatternMatchinTest < Minitest::Test
     else
       assert true
     end
+    refute_syntax(<<~RUBY)
+      if {a: 0, b: 1} => {c:}
+      end
+    RUBY
   end
 
   def test_find_pattern
