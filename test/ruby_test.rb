@@ -520,5 +520,36 @@ class RubyTest < Minitest::Test
     assert_equal ["ba"], $~.to_a
   end
 
+  class FooBar
+    private attr_accessor :foo, :bar
+
+    def yukihiro_matsumoto
+      "I'm Matz."
+    end
+    private alias_method :matz, :yukihiro_matsumoto
+
+    def initialize
+      self.foo = 'FOO'
+      self.bar = 'BAR'
+    end
+
+    def to_s
+      "#{foo} #{bar}"
+    end
+  end
+
+  def test_private_args
+    foo_bar = FooBar.new
+
+    puts foo_bar.yukihiro_matsumoto
+    assert_raises(NoMethodError) { foo_bar.matz }
+
+    assert_equal "FOO BAR", foo_bar.to_s
+    assert_raises(NoMethodError) { foo_bar.foo }
+    assert_raises(NoMethodError) { foo_bar.foo = '' }
+    assert_raises(NoMethodError) { foo_bar.bar }
+    assert_raises(NoMethodError) { foo_bar.bar = '' }
+  end
+
   # --backtrace-limit option
 end

@@ -27,6 +27,8 @@ class EndlessMethodDefinitionTest < Minitest::Test
     1
   def f6(x) = @foo = x
 
+  def version_3?(v) = v.to_f >= 3.0
+
   def test_others
     assert_equal 42, f1
     assert_equal 42, f2
@@ -38,5 +40,8 @@ class EndlessMethodDefinitionTest < Minitest::Test
     refute_syntax(<<~RUBY)
       def f7 x = x + 1
     RUBY
+
+    refute version_3?('2.7')
+    assert version_3?('3.0')
   end
 end
