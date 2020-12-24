@@ -555,5 +555,42 @@ class RubyTest < Minitest::Test
     assert_raises(NoMethodError) { foo_bar.bar = '' }
   end
 
+  def test_array_slice
+    dirty_data = ['--', 'data1', '--', 'data2', '--', 'data3']
+    result = dirty_data[(1..).step(2)] # take each second element
+    assert_equal ["data1", "data2", "data3"], result
+
+    result = dirty_data[(0..).step(3)] # take each second element
+    assert_equal ["--", "data2"], result
+  end
+
+  def test_sorted_set
+    e = assert_raises(RuntimeError) { SortedSet }
+    assert_equal "The `SortedSet` class has been extracted from the `set` library.You must use the `sorted_set` gem or other alternatives.", e.message
+  end
+
+  require 'set'
+  def test_set_join
+    a = Set[1, 2, 3]
+    assert_equal "1=2=3", a.join('=')
+  end
+
+  # https://github.com/ruby/set/blob/v1.0.1/test/test_set.rb#L335-L351
+  def test_spacecraft_operator
+    set = Set[1,2,3]
+
+    assert_nil(set <=> 2)
+
+    assert_nil(set <=> set.to_a)
+
+    assert_equal(-1,  set <=> Set[1,2,3,4])
+    assert_equal( 0,  set <=> Set[3,2,1]  )
+    assert_equal(nil, set <=> Set[1,2,4]  )
+    assert_equal(+1,  set <=> Set[2,3]    )
+    assert_equal(+1,  set <=> Set[]       )
+
+    assert_equal(0, Set[] <=> Set[])
+  end
+
   # --backtrace-limit option
 end
