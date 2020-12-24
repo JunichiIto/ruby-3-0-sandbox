@@ -591,6 +591,4 @@ class RubyTest < Minitest::Test
 
     assert_equal(0, Set[] <=> Set[])
   end
-
-  # --backtrace-limit option
 end
