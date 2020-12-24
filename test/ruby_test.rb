@@ -10,6 +10,10 @@ end
 class RubyTest < Minitest::Test
   include RefuteSyntax
 
+  def test_version
+    assert_equal 'ruby 3.0.0dev (2020-12-24T09:58:40Z master 7ca2ca9e32) [x86_64-darwin20]', RUBY_DESCRIPTION
+  end
+
   def add(a, b, c)
     a + b + c
   end
