@@ -427,7 +427,6 @@ class RubyTest < Minitest::Test
     assert_equal 123, re.foo
   end
 
-  # EXPERIMENTAL
   def test_hash_yield
     h = {a: 1}
     h.each do |k, v|
