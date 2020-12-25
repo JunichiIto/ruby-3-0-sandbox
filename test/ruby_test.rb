@@ -11,7 +11,7 @@ class RubyTest < Minitest::Test
   include RefuteSyntax
 
   def test_version
-    assert_equal 'ruby 3.0.0dev (2020-12-24T09:58:40Z master 7ca2ca9e32) [x86_64-darwin20]', RUBY_DESCRIPTION
+    assert_equal 'ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin20]', RUBY_DESCRIPTION
   end
 
   def add(a, b, c)
